@@ -276,7 +276,59 @@ body {
     font-size: 22px;
 }
 
+.qa-tools {
+    padding: 60px 10%;
+    background: #081b29;
+}
 
+.qa-tools .sub-title {
+    text-align: center;
+    font-size: 45px;
+    margin-bottom: 40px;
+    color: #fff;
+}
+
+.qa-tools .sub-title span {
+    color: #0ef;
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.tool-card {
+    background: #12293a;
+    padding: 30px 20px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #0ef2;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tool-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 20px #0ef4;
+}
+
+.tool-card i {
+    font-size: 40px;
+    color: #0ef;
+    margin-bottom: 15px;
+}
+
+.tool-card h3 {
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.tool-card p {
+    font-size: 14px;
+    color: #ccc;
+    line-height: 1.5;
+}
 .projects {
     padding: 80px 10%;
     background: #081b29;
