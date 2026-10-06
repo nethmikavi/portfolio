@@ -290,12 +290,22 @@
         </div>
 
         <div class="contact-form">
-            <form action="#">
-                <input type="text" placeholder="Enter Your Name" required>
-                <input type="email" placeholder="Enter Your Email" required>
-                <input type="text" placeholder="Enter Your Subject">
-                <textarea name="message" id="message" cols="40" rows="10" placeholder="Enter Your Message" required></textarea>
-                <input type="submit" value="Send Message" class="send">
+            <form id="portfolio-form">
+                <!-- Updated Web3Forms Access Key -->
+                <input type="hidden" name="access_key" value="5cbfbdfc-3fed-4844-9efb-d40349fa0743">
+
+                <!-- Form Customizations -->
+                <input type="hidden" name="from_name" value="Nethmi Kavindya Portfolio">
+                <input type="hidden" name="replyto" id="replyto_field">
+
+                <!-- Form Inputs -->
+                <input type="text" name="name" id="user_name" placeholder="Enter Your Name" required>
+                <input type="email" name="email" id="user_email" placeholder="Enter Your Email" required>
+                <input type="text" name="subject" id="user_subject" placeholder="Enter Your Subject" required>
+                <textarea name="message" id="user_message" cols="40" rows="10" placeholder="Enter Your Message" required></textarea>
+                
+                <input type="submit" value="Send Message" class="send" id="submit_btn">
+                <p id="form-result" style="margin-top: 15px; font-size: 14px; font-weight: 500;"></p>
             </form>
         </div>
     </section>
@@ -305,5 +315,88 @@
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.0.6/tsparticles.slim.bundle.min.js"></script>
     <script src="main.js"></script>
+
+    <!-- Script handling form submissions -->
+    <script>
+        const form = document.getElementById('portfolio-form');
+        const result = document.getElementById('form-result');
+        const submitBtn = document.getElementById('submit_btn');
+
+        // New Valid Web3Forms Access Key
+        const ACCESS_KEY = "5cbfbdfc-3fed-4844-9efb-d40349fa0743";
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const clientEmail = document.getElementById('user_email').value;
+            document.getElementById('replyto_field').value = clientEmail;
+
+            submitBtn.value = "Sending...";
+            submitBtn.disabled = true;
+
+            const formData = new FormData(form);
+            const object = Object.fromEntries(formData);
+            
+            // Assign active access key
+            object.access_key = ACCESS_KEY;
+            
+            const json = JSON.stringify(object);
+
+            // Send primary submission email to Admin (nethmijayasingha3@gmail.com)
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: json
+            })
+            .then(async (response) => {
+                let res = await response.json();
+                if (response.status == 200) {
+                    result.style.color = "#00eeff";
+                    result.innerHTML = "Thank you! Your message has been sent successfully.";
+                    
+                    // Send confirmation receipt to the visitor who submitted the form
+                    sendClientCopy(object);
+                } else {
+                    result.style.color = "#ff4d4d";
+                    result.innerHTML = res.message || "Something went wrong. Please try again.";
+                }
+            })
+            .catch(error => {
+                result.style.color = "#ff4d4d";
+                result.innerHTML = "Something went wrong. Please try again.";
+            })
+            .then(function() {
+                form.reset();
+                submitBtn.value = "Send Message";
+                submitBtn.disabled = false;
+                setTimeout(() => {
+                    result.innerHTML = "";
+                }, 5000);
+            });
+        });
+
+        // Send copy back to sender
+        function sendClientCopy(data) {
+            const clientPayload = {
+                access_key: ACCESS_KEY,
+                name: "Nethmi Kavindya Portfolio",
+                email: data.email,
+                subject: "Copy of your message to Nethmi Kavindya",
+                message: "Hello " + data.name + ",\n\nThank you for reaching out! Here is a confirmation copy of your message:\n\nSubject: " + data.subject + "\nMessage: " + data.message + "\n\nI will review your message and respond shortly.\n\nBest regards,\nNethmi Kavindya"
+            };
+
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(clientPayload)
+            });
+        }
+    </script>
 </body>
 </html>
